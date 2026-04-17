@@ -89,6 +89,19 @@ export default function Hero() {
         delay: 1.8,
         ease: 'back.out(1.5)'
       });
+
+      // WOW FACTOR: Parallax Scroll zoom
+      gsap.to('.hero-3d-animate', {
+        scrollTrigger: {
+          trigger: '.hero-3d-animate',
+          start: 'top 30%',
+          end: 'bottom -100%',
+          scrub: 1,
+        },
+        scale: 2.5,
+        x: '-20%',
+        ease: 'power1.inOut'
+      });
     }, containerRef);
     return () => ctx.revert();
   }, []);

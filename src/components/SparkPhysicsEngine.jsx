@@ -28,6 +28,27 @@ function Sparks() {
 
   let lastScrollY = window.scrollY;
 
+  // Global click shockwave logic
+  useEffect(() => {
+    const handleBlast = (e) => {
+       const blastX = (e.clientX / window.innerWidth) * 50 - 25;
+       const blastY = -(e.clientY / window.innerHeight) * 50 + 25;
+       
+       particles.forEach(p => {
+         const dx = p.x - blastX;
+         const dy = p.y - blastY;
+         const dist = Math.sqrt(dx*dx + dy*dy);
+         if(dist < 20) {
+            const force = (20 - dist) * 0.1;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+         }
+       });
+    };
+    window.addEventListener('click', handleBlast);
+    return () => window.removeEventListener('click', handleBlast);
+  }, [particles]);
+
   useFrame((state, delta) => {
     if (!meshRef.current) return;
     
@@ -39,25 +60,25 @@ function Sparks() {
     particles.forEach((particle, i) => {
       let { speed, x, y, z, vx, vy, vz } = particle;
 
-      // React dynamically to scroll velocity - massive WOW boost
       if (Math.abs(velocityY) > 0) {
         vy -= velocityY * 0.008;
         vx += (Math.random() - 0.5) * velocityY * 0.02;
       } else {
-        vy *= 0.95; // dampening back to normal
+        vy *= 0.95; 
         if(vy > -speed) vy = -speed;
       }
       
+      // Horizontal friction (from blasts)
+      vx *= 0.95;
+
       y += vy;
       x += vx;
       z += vz;
 
-      // Aggressive Bounce algorithm
       if (y < -20) {
         y = -20;
-        vy = -vy * 0.8; // higher energy retention
+        vy = -vy * 0.8; 
         if(Math.abs(vy) < 0.2) {
-            // Respawn
             y = 25 + Math.random() * 10;
             vy = -speed;
             x = (Math.random() - 0.5) * 50;
@@ -72,7 +93,6 @@ function Sparks() {
       
       dummy.position.set(x, y, z);
       
-      // Much more noticeable scaling when moving fast
       const scale = Math.max(0.2, 1 + Math.abs(vy) * 4);
       dummy.scale.set(scale, scale, scale);
       
@@ -84,8 +104,7 @@ function Sparks() {
 
   return (
     <instancedMesh ref={meshRef} args={[null, null, COUNT]}>
-      {/* Lower poly, bigger base size */}
-      <sphereGeometry args={[0.15, 6, 6]} />
+      <sphereGeometry args={[0.2, 6, 6]} />
       <meshBasicMaterial color="#ff5719" />
     </instancedMesh>
   );
