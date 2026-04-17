@@ -15,10 +15,11 @@ export default function SpecsTable() {
           start: "top 75%",
         },
         opacity: 0,
-        x: -50,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: "power2.out"
+        x: -100,
+        scale: 0.95,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "back.out(2)"
       });
     }, sectionRef);
     return () => ctx.revert();

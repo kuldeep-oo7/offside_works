@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const COUNT = 1000;
+const COUNT = 150;
 
 function Sparks() {
   const meshRef = useRef();
@@ -14,7 +14,7 @@ function Sparks() {
     const temp = [];
     for (let i = 0; i < COUNT; i++) {
         const t = Math.random() * 100;
-        const speed = 0.01 + Math.random() * 0.03;
+        const speed = 0.05 + Math.random() * 0.1; // Faster baseline sparks
         const x = (Math.random() - 0.5) * 50;
         const y = (Math.random() - 0.5) * 50;
         const z = (Math.random() - 0.5) * 50;
@@ -29,32 +29,34 @@ function Sparks() {
   let lastScrollY = window.scrollY;
 
   useFrame((state, delta) => {
+    if (!meshRef.current) return;
+    
     const scrollY = window.scrollY;
-    const velocityY = scrollY - lastScrollY;
+    // Boost effect
+    const velocityY = (scrollY - lastScrollY) * 1.5; 
     lastScrollY = scrollY;
     
     particles.forEach((particle, i) => {
-      let { t, factor, speed, x, y, z, vx, vy, vz } = particle;
+      let { speed, x, y, z, vx, vy, vz } = particle;
 
-      // React to scroll velocity
+      // React dynamically to scroll velocity - massive WOW boost
       if (Math.abs(velocityY) > 0) {
-        vy -= velocityY * 0.005;
-        vx += (Math.random() - 0.5) * velocityY * 0.01;
+        vy -= velocityY * 0.008;
+        vx += (Math.random() - 0.5) * velocityY * 0.02;
       } else {
         vy *= 0.95; // dampening back to normal
         if(vy > -speed) vy = -speed;
       }
       
-      // Update position
       y += vy;
       x += vx;
       z += vz;
 
-      // Bounce algorithm (Virtual floor)
+      // Aggressive Bounce algorithm
       if (y < -20) {
         y = -20;
-        vy = -vy * 0.6; // bounce and lose energy
-        if(Math.abs(vy) < 0.1) {
+        vy = -vy * 0.8; // higher energy retention
+        if(Math.abs(vy) < 0.2) {
             // Respawn
             y = 25 + Math.random() * 10;
             vy = -speed;
@@ -70,8 +72,8 @@ function Sparks() {
       
       dummy.position.set(x, y, z);
       
-      // Create heat glow trail effect scaling
-      const scale = Math.max(0.1, 0.5 + Math.abs(vy) * 2);
+      // Much more noticeable scaling when moving fast
+      const scale = Math.max(0.2, 1 + Math.abs(vy) * 4);
       dummy.scale.set(scale, scale, scale);
       
       dummy.updateMatrix();
@@ -82,7 +84,8 @@ function Sparks() {
 
   return (
     <instancedMesh ref={meshRef} args={[null, null, COUNT]}>
-      <sphereGeometry args={[0.05, 8, 8]} />
+      {/* Lower poly, bigger base size */}
+      <sphereGeometry args={[0.15, 6, 6]} />
       <meshBasicMaterial color="#ff5719" />
     </instancedMesh>
   );

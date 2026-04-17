@@ -15,32 +15,34 @@ export default function Fabrication() {
           start: "top 80%",
         },
         opacity: 0,
-        y: 50,
-        duration: 0.8,
-        ease: "power4.out"
+        y: 80,
+        duration: 1,
+        ease: "back.out(2)"
       });
 
       gsap.from(".service-card", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+        },
+        opacity: 0,
+        y: 150,
+        scale: 0.9,
+        stagger: 0.15,
+        duration: 1.2,
+        ease: "back.out(1.7)"
+      });
+      
+      gsap.from(".image-block", {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 60%",
         },
         opacity: 0,
         y: 100,
-        stagger: 0.2,
-        duration: 1,
-        ease: "power4.out"
-      });
-      
-      gsap.from(".image-block", {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 50%",
-        },
-        opacity: 0,
-        scale: 0.95,
-        duration: 1,
-        ease: "power4.out"
+        scale: 0.8,
+        duration: 1.2,
+        ease: "back.out(1.5)"
       });
     }, sectionRef);
 

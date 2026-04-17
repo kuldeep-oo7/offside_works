@@ -23,15 +23,12 @@ function AbstractMachinedPart({ wireframeMode = false }) {
           <meshBasicMaterial color="#ffffff" wireframe />
         ) : (
           <MeshTransmissionMaterial 
-            backside 
-            samples={4} 
-            thickness={1.5} 
-            chromaticAberration={0.05} 
+            backside={false} 
+            samples={2} 
+            thickness={1} 
+            chromaticAberration={0.1} 
             anisotropy={0.1} 
-            distortion={0.1} 
-            distortionScale={0.3} 
-            temporalDistortion={0.1} 
-            iridescence={1} 
+            iridescence={0.5} 
             iridescenceIOR={1} 
             iridescenceThicknessRange={[0, 1400]} 
             color="#ffb59e"
@@ -60,7 +57,7 @@ export default function Hero() {
       // Laser Etched Reveal for H1
       gsap.set('.laser-text', { clipPath: 'inset(0% 100% 0% 0%)', opacity: 1 });
       gsap.set('.laser-burner', { left: '0%', opacity: 0 });
-      gsap.set('.hero-sub-element', { opacity: 0, y: 20 });
+      gsap.set('.hero-sub-element', { opacity: 0, y: 50 });
 
       gsap.to('.laser-burner', {
         opacity: 1,
@@ -83,14 +80,14 @@ export default function Hero() {
         }
       });
 
-      // Fade in rest of hero content
+      // Fade in rest of hero content with heavy industrial snap
       gsap.to('.hero-sub-element', {
         opacity: 1,
         y: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        delay: 2,
-        ease: 'power2.out'
+        duration: 0.8,
+        stagger: 0.15,
+        delay: 1.8,
+        ease: 'back.out(1.5)'
       });
     }, containerRef);
     return () => ctx.revert();
